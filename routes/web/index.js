@@ -71,17 +71,34 @@ router.post('/register',(req,res)=>{
   var userName=req.body.userName;
   var password=md5(req.body.password);
   var reg_time=new Date().getTime();
-  db.query(`INSERT INTO customer (nickName,userName,password,reg_time,payPass) VALUES ('${nickName}',
-  '${userName}','${password}','${reg_time}','*') `,(err,data)=>{
-      if(err){
-        console.error(err);
-      }
-      else{
-          res.send({
-              msg:'注册成功,快去登录吧！'
-          })
-      }
-   }) 
+  db.query(`select * from customer`,(err,data)=>{
+  	if(err){
+  		console.log(err)
+  	}
+  	else{
+  		if(data.length==0){
+  			db.query(`INSERT INTO customer (nickName,userName,password,reg_time,payPass) VALUES ('${nickName}',
+			  '${userName}','${password}','${reg_time}','*') `,(err,data)=>{
+			      if(err){
+			        console.error(err);
+			      }
+			      else{
+			          res.send({
+			          	  code:1,
+			              msg:'注册成功,快去登录吧！'
+			          })
+			      }
+			}) 
+  		}
+  		else{
+  			 res.send({
+  			 	code:0,
+			    msg:'账号已经被注册！'
+			 })
+  		}
+  	}
+  })
+  
 })
 
 //用户登录
