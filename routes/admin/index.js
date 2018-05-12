@@ -33,12 +33,11 @@ router.use('/seeAllSubType',require('./seeAllSubType')());
  router.use('/seeAllGoods',require('./seeAllGoods')());
  // 订单管理
  router.use('/order',require('./order')());
- // 商铺审核
- router.use('/shopCheck',require('./shopCheck')());
+ 
   // 修改密码
   router.use('/changePass',require('./changePass')());
-  // 广告位设置
-  router.use('/ads',require('./ads')());
+ 
+ 
   // 消息发送
   router.use('/message',require('./message')());
   // 查看已发送的全部消息

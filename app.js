@@ -16,7 +16,7 @@ var adminRoutes = require('./routes/admin/index');
 // 加载用户路由
 var routes = require('./routes/web/index');
 // 加载商铺路由
-var shopRoutes=require('./routes/shop/index');
+// var shopRoutes=require('./routes/shop/index');
 //跨域
 var cors = require('cors');
 
@@ -64,7 +64,7 @@ app.use('/admin', adminRoutes);
 // 用户路由
 app.use('/',routes);
 // 商铺路由
-app.use('/shop',shopRoutes);
+// app.use('/shop',shopRoutes);
 
 // 404 NOT FOUND Page
 app.use(function(req, res, next) {

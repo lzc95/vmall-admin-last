@@ -71,14 +71,15 @@ router.post('/register',(req,res)=>{
   var userName=req.body.userName;
   var password=md5(req.body.password);
   var reg_time=new Date().getTime();
-  db.query(`select * from customer`,(err,data)=>{
+  db.query(`select * from customer where userName='${userName}'`,(err,data)=>{
   	if(err){
   		console.log(err)
   	}
   	else{
   		if(data.length==0){
-  			db.query(`INSERT INTO customer (nickName,userName,password,reg_time,payPass) VALUES ('${nickName}',
-			  '${userName}','${password}','${reg_time}','*') `,(err,data)=>{
+        var user_pic=Math.floor(Math.random()*6 + 1);
+  			db.query(`INSERT INTO customer (nickName,userName,password,reg_time,payPass,user_pic) VALUES ('${nickName}',
+			  '${userName}','${password}','${reg_time}','*','${user_pic}') `,(err,data)=>{
 			      if(err){
 			        console.error(err);
 			      }
@@ -104,20 +105,36 @@ router.post('/register',(req,res)=>{
 //用户登录
 router.use('/login',require('./login')());
 
+//获取用户头像
+router.get('/getUserPic',(req,res)=>{
+  var uId=req.session['uId'];
+   db.query(`select * from customer where uId='${uId}'`,(err,data)=>{
+      if(err){
+        console.log(err)
+      }
+      else{
+        res.send({
+           user_pic:data[0].user_pic
+        })
+      }
+   })
+    
+})
+
 //获取用户状态
 router.get('/getStatus',(req,res)=>{
-   
-    res.send({
-      nickName:req.session['nickName'],
-      uId:req.session['uId']
-    })
+
+        res.send({
+           nickName:req.session['nickName'],
+           uId:req.session['uId'],
+        })  
 })
 
 
 //获取用户地址列表
 router.get('/address',(req,res)=>{
   var uId=req.session.uId;
-  db.query(`SELECT * FROM address WHERE uId='${uId}'`,(err,data)=>{
+  db.query(`SELECT * FROM address WHERE uId='${uId}' AND is_del=0`,(err,data)=>{
     if(err){
       console.error(err);
     }
@@ -153,7 +170,7 @@ router.post('/address',(req,res)=>{
 //删除用户地址
 router.post('/cancelAddress',(req,res)=>{
   var aId=req.body.aId;
-  db.query(`DELETE FROM address WHERE aId='${aId}'`,(err,data)=>{
+  db.query(`update address set is_del=1 where aId='${aId}'`,(err,data)=>{
     if(err){
       console.error(err);
       res.send({
@@ -303,9 +320,9 @@ router.get('/searchGoods',(req,res)=>{
 })
 
 
-  //获取最新上架12件商品商品
+  //获取最新上架14件商品商品
   router.get('/newGoods',(req,res)=>{
-      db.query(`SELECT * FROM goods ORDER BY gTime DESC LIMIT 12`,(err,data)=>{
+      db.query(`SELECT * FROM goods ORDER BY gTime DESC LIMIT 14`,(err,data)=>{
         if(err){
           console.log(err);
         }
@@ -340,7 +357,8 @@ router.get('/searchGoods',(req,res)=>{
 
 //获取默认地址
 router.get('/getDefaultAddress',(req,res)=>{
-    db.query(`select * from address WHERE uId='${req.session['uId']}' limit 1`,(err,data)=>{
+    var uId=req.session['uId'];
+    db.query(`select * from address WHERE uId='${uId}' AND is_del=0 limit 1`,(err,data)=>{
        if(err){
          console.log(err);
        }
@@ -651,7 +669,7 @@ router.post('/publishEvaluation',(req,res)=>{
 //获取商品评价
 router.post('/getEvaluation',(req,res)=>{
    var gId=req.body.gId;
-   db.query(`select leavemessage_table.*,customer.nickName from leavemessage_table,customer 
+   db.query(`select leavemessage_table.*,customer.nickName,customer.user_pic from leavemessage_table,customer 
     where leavemessage_table.uId=customer.uId and leavemessage_table.gId='${gId}' 
     order by comment_date desc`,(err,data)=>{
      if(err){

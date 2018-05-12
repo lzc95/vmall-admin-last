@@ -8,7 +8,7 @@ module.exports=function(){
 	  var db=mysqlConn();
 
 	  router.get('/',(req,res)=>{
-	  	  db.query(`SELECT userName FROM customer`,(err,data)=>{
+	  	  db.query(`SELECT nickName,userName FROM customer`,(err,data)=>{
                if(err){
                	console.error(err);
                }
