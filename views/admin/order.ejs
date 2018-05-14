@@ -116,7 +116,7 @@
              (function(j){
                $('.receipt').eq(j).click(function(){
                   var orderNum=$('.receipt').eq(j).parent().siblings('.orderNum').html()
-                  var number=prompt('请输入订单编号:');
+                  var number=prompt('请输入快递编号:');
                   if(number!=''){
                      $.ajax({
                       url:'/admin/order/receipt',
@@ -128,8 +128,9 @@
                       success:function(data){
                         alert(data.msg);
                         if(data.code==1){
-                        $('.receipt').eq(j).parent().siblings('.is_receipt').html(1)
-                        $('.receipt').eq(j).parent().siblings('.ship_number').html(number)
+                          window.location.reload()
+                          $('.receipt').eq(j).parent().siblings('.is_receipt').html(1)
+                          $('.receipt').eq(j).parent().siblings('.ship_number').html(number)
                             
                           }
                       }
@@ -153,7 +154,7 @@
                       success:function(data){
                         alert(data.msg);
                         if(data.code==1){
-                      
+                            window.location.reload()
                             
                        }
                       }

@@ -690,7 +690,24 @@ router.post('/getEvaluation',(req,res)=>{
 
 
  // 修改账户密码
-  router.use('/changePass',require('./changePass')());
+router.use('/changePass',require('./changePass')());
+
+
+//获取畅销产品
+router.get('/bestSelling',(req,res)=>{
+      db.query(`select * from goods order by sale desc limit 10`,(err,data)=>{
+        if(err){
+          console.log(err);
+        }
+        else{
+            res.send({
+              code:1,
+              goodsList:data
+            })
+        }
+      })
+})
+
 
  // 退出登录
 router.get('/logout',(req,res)=>{
